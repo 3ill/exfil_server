@@ -6,6 +6,7 @@ export interface ICreateAccount {
   startingBalance: string;
   sourceAddress: string;
   destinationAddress: string;
+  network: TNetwork;
 }
 
 export interface ILoadAccount {
@@ -16,4 +17,8 @@ export interface ILoadAccount {
 export interface ISubmitTX {
   tx: Transaction<Memo<MemoType>, Operation[]>;
   network: TNetwork;
+}
+
+export interface IProvidePaymentOp extends ICreateAccount {
+  amount: string;
 }
