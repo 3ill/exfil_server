@@ -4,3 +4,8 @@ export interface IHandleQueue {
   data: ITransfer;
   delay: number;
 }
+
+export interface IScheduleTransfer {
+  unlockTimestamp: number;
+  data: ITransfer;
+}
