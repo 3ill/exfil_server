@@ -2,7 +2,10 @@ import { StellarService } from '@/modules/stellar/service/stellar.service';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
-import { IHandleQueue } from '../interface/automation.interface';
+import {
+  IHandleQueue,
+  IScheduleTransfer,
+} from '../interface/automation.interface';
 
 @Injectable()
 export class AutomationProvider {
@@ -22,5 +25,23 @@ export class AutomationProvider {
 
   async executeTransfer(args: Omit<IHandleQueue, 'delay'>) {
     return await this.stellarService.transfer(args.data);
+  }
+
+  async scheduleTransfer(args: IScheduleTransfer) {
+    const { unlockTimestamp, data } = args;
+    const now = Date.now();
+    const runAt = unlockTimestamp - 3000;
+    const delay = runAt - now;
+
+    if (delay <= 0) {
+      console.log('🔔 Unlock time is now or passed — running immediately');
+      return await this.executeTransfer({ data });
+    } else {
+      console.log(`⏳ Scheduling transfer job to run in ${delay}ms`);
+      return await this.addToQueue({
+        data,
+        delay,
+      });
+    }
   }
 }
