@@ -9,7 +9,7 @@ import { AutomationProcessor } from './processor/automation.processor';
   imports: [
     StellarModule,
     BullModule.registerQueue({
-      name: 'init-transfer',
+      name: 'transfer',
     }),
   ],
   providers: [AutomationService, AutomationProvider, AutomationProcessor],
