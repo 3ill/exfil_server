@@ -1,13 +1,13 @@
 import { MAINNET_URL, TESTNET_URL } from '@/shared/constants/constants';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { Horizon, Keypair, Operation } from '@stellar/stellar-sdk';
+import { Injectable } from '@nestjs/common';
+import { Asset, Horizon, Keypair, Operation } from '@stellar/stellar-sdk';
 import {
   ICreateAccount,
   ILoadAccount,
+  IProvidePaymentOp,
   ISubmitTX,
   TNetwork,
 } from '../interface/stellar.interface';
-import { StellarErrorMessages } from '../data/stellar.data';
 
 @Injectable()
 export class StellarProvider {
@@ -52,6 +52,19 @@ export class StellarProvider {
     });
   }
 
+  providePaymentOp(
+    args: Omit<IProvidePaymentOp, 'network' | 'startingBalance'>,
+  ) {
+    const { sourceAddress, destinationAddress, amount } = args;
+
+    return Operation.payment({
+      source: sourceAddress,
+      destination: destinationAddress,
+      asset: Asset.native(),
+      amount,
+    });
+  }
+
   async submitTx(args: ISubmitTX) {
     try {
       const server = this.initServer(args.network);
@@ -59,11 +72,26 @@ export class StellarProvider {
       return result.hash;
     } catch (error) {
       console.error(error);
-      throw new InternalServerErrorException(
-        StellarErrorMessages.ERROR_SUBMITTING_TX,
+      //eslint-disable-next-line
+      if (error.response && error.response.data) {
         //eslint-disable-next-line
-        error,
-      );
+        console.log('Error response from Horizon:', error.response.data);
+
+        //eslint-disable-next-line
+        if (error.response.data.extras) {
+          console.log(
+            'Extras object:',
+            //eslint-disable-next-line
+            JSON.stringify(error.response.data.extras, null, 2),
+          );
+        }
+      } else {
+        console.error('Unknown error submitting transaction:', error);
+      }
     }
+  }
+
+  deriveKeypairFromSecret(secretKey: string) {
+    return Keypair.fromSecret(secretKey);
   }
 }
