@@ -4,6 +4,7 @@ import { AutomationService } from './service/automation.service';
 import { StellarModule } from '../stellar/stellar.module';
 import { BullModule } from '@nestjs/bull';
 import { AutomationProcessor } from './processor/automation.processor';
+import { AutomationController } from './controller/automation.controller';
 
 @Module({
   imports: [
@@ -13,5 +14,6 @@ import { AutomationProcessor } from './processor/automation.processor';
     }),
   ],
   providers: [AutomationService, AutomationProvider, AutomationProcessor],
+  controllers: [AutomationController],
 })
 export class AutomationModule {}
