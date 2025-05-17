@@ -30,6 +30,12 @@ export class StellarProvider {
     return account;
   }
 
+  async fetchBaseFee(network: TNetwork) {
+    const server = this.initServer(network);
+    const baseFee = await server.fetchBaseFee();
+    return baseFee;
+  }
+
   createKeypair() {
     const keypair = Keypair.random();
     const publicKey = keypair.publicKey();
