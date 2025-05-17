@@ -25,10 +25,18 @@ describe('Stellar', () => {
       expect(result).toBeDefined();
     });
 
-    it.only('should derive keypair from passphrase', async () => {
+    it('should derive keypair from passphrase', async () => {
       const result = await provider.deriveKeypairFromPassphrase(PASSPHRASE);
       console.log(result);
       expect(result).toBeDefined();
+    });
+  });
+
+  describe('Base Fee', () => {
+    it.only('should return base fee on pi', async () => {
+      const fee = await provider.fetchBaseFee('TESTNET');
+      console.log(fee);
+      expect(fee).toBeDefined();
     });
   });
 });
