@@ -8,10 +8,11 @@ import {
   ISubmitTX,
   TNetwork,
 } from '../interface/stellar.interface';
+import { DeriveSecret } from '@/shared/utils/derive-secret.utils';
 
 @Injectable()
 export class StellarProvider {
-  constructor() {}
+  constructor(private readonly utils: DeriveSecret) {}
 
   initServer(network: TNetwork) {
     switch (network) {
@@ -93,5 +94,9 @@ export class StellarProvider {
 
   deriveKeypairFromSecret(secretKey: string) {
     return Keypair.fromSecret(secretKey);
+  }
+
+  async deriveKeypairFromPassphrase(passphrase: string) {
+    return await this.utils.derivePiSecretFromMnemonic(passphrase);
   }
 }
