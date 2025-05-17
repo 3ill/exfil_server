@@ -15,7 +15,7 @@ export class AutomationProvider {
   ) {}
 
   async addToQueue(args: IHandleQueue) {
-    return this.transferQueue.add('init-transfer', args.data, {
+    return await this.transferQueue.add('init-transfer', args.data, {
       delay: args.delay,
       attempts: 3,
       backoff: 500,
@@ -33,15 +33,20 @@ export class AutomationProvider {
     const runAt = unlockTimestamp - 3000;
     const delay = runAt - now;
 
-    if (delay <= 0) {
-      console.log('🔔 Unlock time is now or passed — running immediately');
-      return await this.executeTransfer({ data });
-    } else {
-      console.log(`⏳ Scheduling transfer job to run in ${delay}ms`);
-      return await this.addToQueue({
-        data,
-        delay,
-      });
+    try {
+      if (delay <= 0) {
+        console.log('🔔 Unlock time is now or passed — running immediately');
+        return await this.executeTransfer({ data });
+      } else {
+        console.log(`⏳ Scheduling transfer job to run in ${delay}ms`);
+        return await this.addToQueue({
+          data,
+          delay,
+        });
+      }
+    } catch (error) {
+      //eslint-disable-next-line
+      throw new Error(error);
     }
   }
 }
