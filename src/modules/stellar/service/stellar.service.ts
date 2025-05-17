@@ -16,7 +16,7 @@ import {
   ITransfer,
   TNetwork,
 } from '../interface/stellar.interface';
-import { BASE_FEE, Memo, TransactionBuilder } from '@stellar/stellar-sdk';
+import { Memo, TransactionBuilder } from '@stellar/stellar-sdk';
 import { PUBLIC_KEY, SECRET_KEY } from '@/shared/constants/constants';
 
 @Injectable()
@@ -70,8 +70,9 @@ export class StellarService {
         network,
         publicKey: PUBLIC_KEY,
       });
+      const baseFee = await this.stellarProvider.fetchBaseFee(network);
       const tx = new TransactionBuilder(sourceAccount, {
-        fee: BASE_FEE,
+        fee: String(baseFee),
         networkPassphrase: this.determinePassphrase(network),
       })
         .addOperation(
@@ -131,8 +132,10 @@ export class StellarService {
         publicKey: keyPair.publicKey(),
       });
 
+      const baseFee = await this.stellarProvider.fetchBaseFee(network);
+
       const tx = new TransactionBuilder(account, {
-        fee: BASE_FEE,
+        fee: String(baseFee),
         networkPassphrase: this.determinePassphrase(network),
       })
         .addOperation(
