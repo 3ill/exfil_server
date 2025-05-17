@@ -22,3 +22,11 @@ export interface ISubmitTX {
 export interface IProvidePaymentOp extends ICreateAccount {
   amount: string;
 }
+
+export interface ITransfer {
+  secretKey?: string;
+  passphrase?: string;
+  destinationAddress: string;
+  amount: string;
+  network: TNetwork;
+}
