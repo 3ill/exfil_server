@@ -13,6 +13,7 @@ import {
 import {
   ICreateAccount,
   ILoadAccount,
+  ITransfer,
   TNetwork,
 } from '../interface/stellar.interface';
 import { BASE_FEE, Memo, TransactionBuilder } from '@stellar/stellar-sdk';
@@ -110,6 +111,63 @@ export class StellarService {
       console.error(error);
       throw new HttpException(
         StellarErrorMessages.ERROR_CREATING_ACCOUNT,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  async transfer(args: ITransfer) {
+    const { destinationAddress, secretKey, passphrase, amount, network } = args;
+    try {
+      const keyPair = secretKey
+        ? this.stellarProvider.deriveKeypairFromSecret(secretKey)
+        : await this.stellarProvider.deriveKeypairFromPassphrase(passphrase!);
+
+      const account = await this.stellarProvider.loadAccount({
+        network,
+        publicKey: keyPair.publicKey(),
+      });
+
+      const tx = new TransactionBuilder(account, {
+        fee: BASE_FEE,
+        networkPassphrase: this.determinePassphrase(network),
+      })
+        .addOperation(
+          this.stellarProvider.providePaymentOp({
+            amount,
+            destinationAddress,
+            sourceAddress: keyPair.publicKey(),
+          }),
+        )
+        .setTimeout(30)
+        .addMemo(Memo.text('Payment initiated'))
+        .build();
+
+      tx.sign(keyPair);
+
+      const hash = await this.stellarProvider.submitTx({
+        network,
+        tx,
+      });
+
+      if (!hash) {
+        throw new HttpException(
+          StellarErrorMessages.ERROR_SUBMITTING_TX,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      return {
+        status: HttpStatus.OK,
+        hash,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        StellarErrorMessages.ERROR_TRANSFERRING_ASSET,
         HttpStatus.INTERNAL_SERVER_ERROR,
         {
           cause: error,
