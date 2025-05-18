@@ -12,7 +12,7 @@ export class AutomationProcessor {
     let retryCount = 0;
     const date = new Date();
     const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-    console.log(`Executing Transfer at exactly => ${time}  `);
+    console.log(`Executing Transfer at exactly => ${time}`);
     const result = await this.stellarService.transfer(job.data);
     if (!result.hash) {
       retryCount++;
