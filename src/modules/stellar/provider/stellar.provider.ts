@@ -79,16 +79,13 @@ export class StellarProvider {
       return result.hash;
     } catch (error) {
       console.error(error);
-      //eslint-disable-next-line
+
       if (error.response && error.response.data) {
-        //eslint-disable-next-line
         console.log('Error response from Horizon:', error.response.data);
 
-        //eslint-disable-next-line
         if (error.response.data.extras) {
           console.log(
             'Extras object:',
-            //eslint-disable-next-line
             JSON.stringify(error.response.data.extras, null, 2),
           );
         }
