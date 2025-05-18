@@ -3,7 +3,7 @@ import { StellarService } from '@/modules/stellar/service/stellar.service';
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 
-@Processor('transer')
+@Processor('transfer')
 export class AutomationProcessor {
   constructor(private readonly stellarService: StellarService) {}
 
