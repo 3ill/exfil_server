@@ -1,0 +1,21 @@
+name: Transfer
+method: POST
+url: http://localhost:3000/api/automation/executeTransfer
+body:
+  content: |-
+    {
+      "data": {
+          "passphrase": "kitchen palace loop code seed era nominee solve online trust humor jar economy fade relax truth kingdom extend detect surprise badge muffin person weird",
+           "destinationAddress": "GDPG2HQKWMSKOM7SOAEXNOUVZOKBOOQX2ALDFXRXPHUUHUR3SEQN2PEY",
+           "amount": "2",
+           "network": "TESTNET"
+      }
+    ,
+      "timestamp": {
+        "unlockTimestamp": "16:53:00"
+      }
+    }
+  content_type: application/json
+headers:
+- name: content-type
+  value: application/json
