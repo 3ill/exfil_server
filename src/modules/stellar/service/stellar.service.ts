@@ -151,6 +151,10 @@ export class StellarService {
 
       tx.sign(keyPair);
 
+      const date = new Date();
+      const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+      console.log(`Transaction submitted exactly at => ${time}`);
       const hash = await this.stellarProvider.submitTx({
         network,
         tx,
