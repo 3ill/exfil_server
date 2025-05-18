@@ -35,9 +35,27 @@ export class AutomationProvider {
   }
 
   @OnEvent(SharedEvents.TRANSFER_JOB)
-  async addToQueue(args: IHandleQueue) {
-    return await this.transferQueue.add('init-transfer', args.data, {
-      delay: args.delay,
+  async addToQueue(args: TransferDto) {
+    const {
+      passphrase,
+      destinationAddress,
+      amount,
+      network,
+      secretKey,
+      delay,
+    } = args;
+    const queueData: IHandleQueue = {
+      data: {
+        passphrase,
+        amount,
+        destinationAddress,
+        network,
+        secretKey,
+      },
+      delay,
+    };
+    return await this.transferQueue.add('init-transfer', queueData.data, {
+      delay: queueData.delay,
       attempts: 3,
       backoff: 100,
       removeOnComplete: true,
