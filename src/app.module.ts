@@ -7,6 +7,8 @@ import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './shared/config/config';
 import { AutomationModule } from './modules/automation/automation.module';
+import { StellarModule } from './modules/stellar/stellar.module';
+import { DeriveSecret } from './shared/utils/derive-secret.utils';
 
 @Module({
   imports: [
@@ -30,8 +32,9 @@ import { AutomationModule } from './modules/automation/automation.module';
       }),
     }),
     AutomationModule,
+    StellarModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DeriveSecret],
 })
 export class AppModule {}
