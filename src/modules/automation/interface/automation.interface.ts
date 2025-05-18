@@ -6,6 +6,6 @@ export interface IHandleQueue {
 }
 
 export interface IScheduleTransfer {
-  unlockTimestamp: number;
+  unlockTimestamp: string;
   data: ITransfer;
 }
