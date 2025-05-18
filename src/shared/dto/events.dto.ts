@@ -1,4 +1,5 @@
 import { TNetwork } from '@/modules/stellar/interface/stellar.interface';
+import { TStatus } from '@/modules/transactions/interface/transactions.interface';
 
 export class TransferDto {
   constructor(
@@ -8,5 +9,15 @@ export class TransferDto {
     readonly delay: number,
     readonly passphrase?: string,
     readonly secretKey?: string,
+  ) {}
+}
+
+export class CreateTxDto {
+  constructor(
+    readonly amount: string,
+    readonly destinationAddress: string,
+    readonly status: TStatus,
+    readonly timestamp: string,
+    readonly hash?: string,
   ) {}
 }
