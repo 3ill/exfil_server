@@ -5,7 +5,7 @@ import { TransactionsService } from '../service/transactions.service';
 export class TransactionsController {
   constructor(private readonly txService: TransactionsService) {}
 
-  @Get('transactions')
+  @Get('fetchTx')
   async fetchTxs() {
     return await this.txService.fetchTxs();
   }
