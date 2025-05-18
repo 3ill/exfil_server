@@ -9,7 +9,7 @@ import {
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { SharedEvents } from '@/shared/events/events';
 import { TransferDto } from '@/shared/dto/events.dto';
-import { SuccessMessage } from '../data/automation.data';
+import { SuccessMessage, TIMER } from '../data/automation.data';
 
 @Injectable()
 export class AutomationProvider {
@@ -70,7 +70,8 @@ export class AutomationProvider {
     const { unlockTimestamp, data } = args;
     const now = Date.now();
 
-    const runAt = this.formatAndReturnUnlockTIme(unlockTimestamp) - 2000;
+    const runAt =
+      this.formatAndReturnUnlockTIme(unlockTimestamp) - TIMER['2_SECS'];
 
     const delay = runAt - now;
     console.log(
