@@ -6,6 +6,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './shared/config/config';
+import { AutomationModule } from './modules/automation/automation.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import config from './shared/config/config';
         },
       }),
     }),
+    AutomationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
