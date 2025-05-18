@@ -1,5 +1,5 @@
 import { TNetwork } from '@/modules/stellar/interface/stellar.interface';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 class TransferDto {
   @IsOptional()
@@ -25,8 +25,8 @@ class TransferDto {
 
 class TimestampDto {
   @IsNotEmpty()
-  @IsNumber()
-  unlockTimestamp: number;
+  @IsString()
+  unlockTimestamp: string;
 }
 
 export class ExecuteTransferDto {
