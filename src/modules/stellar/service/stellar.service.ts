@@ -18,10 +18,17 @@ import {
 } from '../interface/stellar.interface';
 import { Memo, TransactionBuilder } from '@stellar/stellar-sdk';
 import { PUBLIC_KEY, SECRET_KEY } from '@/shared/constants/constants';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SharedEvents } from '@/shared/events/events';
+import { CreateTxDto } from '@/shared/dto/events.dto';
+import { TStatus } from '@/modules/transactions/interface/transactions.interface';
 
 @Injectable()
 export class StellarService {
-  constructor(private readonly stellarProvider: StellarProvider) {}
+  constructor(
+    private readonly stellarProvider: StellarProvider,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   private determinePassphrase(network: TNetwork) {
     switch (network) {
@@ -167,6 +174,11 @@ export class StellarService {
         );
       }
 
+      const status: TStatus = hash ? 'SUCCESS' : 'FAILED';
+      this.eventEmitter.emit(
+        SharedEvents.CREATE_TX,
+        new CreateTxDto(amount, destinationAddress, status, time, hash),
+      );
       return {
         status: HttpStatus.OK,
         hash,
