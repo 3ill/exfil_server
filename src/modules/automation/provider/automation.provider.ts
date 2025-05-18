@@ -1,24 +1,45 @@
 import { StellarService } from '@/modules/stellar/service/stellar.service';
 import { InjectQueue } from '@nestjs/bull';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
 import {
   IHandleQueue,
   IScheduleTransfer,
 } from '../interface/automation.interface';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { SharedEvents } from '@/shared/events/events';
+import { TransferDto } from '@/shared/dto/events.dto';
+import { SuccessMessage } from '../data/automation.data';
 
 @Injectable()
 export class AutomationProvider {
   constructor(
     @InjectQueue('transfer') private transferQueue: Queue,
+    private readonly eventEmitter: EventEmitter2,
     private readonly stellarService: StellarService,
   ) {}
 
+  private formatAndReturnUnlockTIme(unlockTimestamp: string) {
+    const [hour, minute, second] = unlockTimestamp.split(':').map(Number);
+    const nowDate = new Date();
+    const unlockDate = new Date(
+      nowDate.getFullYear(),
+      nowDate.getMonth(),
+      nowDate.getDate(),
+      hour,
+      minute,
+      second,
+    );
+
+    return unlockDate.getTime();
+  }
+
+  @OnEvent(SharedEvents.TRANSFER_JOB)
   async addToQueue(args: IHandleQueue) {
     return await this.transferQueue.add('init-transfer', args.data, {
       delay: args.delay,
       attempts: 3,
-      backoff: 500,
+      backoff: 100,
       removeOnComplete: true,
     });
   }
@@ -30,19 +51,38 @@ export class AutomationProvider {
   async scheduleTransfer(args: IScheduleTransfer) {
     const { unlockTimestamp, data } = args;
     const now = Date.now();
-    const runAt = unlockTimestamp - 3000;
-    const delay = runAt - now;
 
+    const runAt = this.formatAndReturnUnlockTIme(unlockTimestamp) - 10000;
+
+    const delay = runAt - now;
+    console.log(
+      `Time passed by user ${this.formatAndReturnUnlockTIme(unlockTimestamp)}, Time to run at ${runAt}, delay ${delay} `,
+    );
     try {
       if (delay <= 0) {
         console.log('🔔 Unlock time is now or passed — running immediately');
         return await this.executeTransfer({ data });
       } else {
-        console.log(`⏳ Scheduling transfer job to run in ${delay}ms`);
-        return await this.addToQueue({
-          data,
-          delay,
-        });
+        const delayInSecs = Math.round(delay / 1000);
+        console.log(
+          `⏳ Scheduling transfer job to run in ${delay}ms => ${delayInSecs}Secs`,
+        );
+        this.eventEmitter.emit(
+          SharedEvents.TRANSFER_JOB,
+          new TransferDto(
+            data.destinationAddress,
+            data.amount,
+            data.network,
+            delay,
+            data.passphrase,
+            data.secretKey,
+          ),
+        );
+
+        return {
+          status: HttpStatus.OK,
+          message: `${SuccessMessage.TRANSFER_INIT}, Pi will be moved in ${delayInSecs}Secs `,
+        };
       }
     } catch (error) {
       //eslint-disable-next-line
