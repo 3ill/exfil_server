@@ -70,7 +70,7 @@ export class AutomationProvider {
     const { unlockTimestamp, data } = args;
     const now = Date.now();
 
-    const runAt = this.formatAndReturnUnlockTIme(unlockTimestamp) - 10000;
+    const runAt = this.formatAndReturnUnlockTIme(unlockTimestamp) - 2000;
 
     const delay = runAt - now;
     console.log(
