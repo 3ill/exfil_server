@@ -9,6 +9,7 @@ import config from './shared/config/config';
 import { AutomationModule } from './modules/automation/automation.module';
 import { StellarModule } from './modules/stellar/stellar.module';
 import { DeriveSecret } from './shared/utils/derive-secret.utils';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -16,6 +17,14 @@ import { DeriveSecret } from './shared/utils/derive-secret.utils';
       isGlobal: true,
       cache: true,
       load: [config],
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get('db.uri'),
+        dbName: configService.get('db.name'),
+      }),
     }),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
