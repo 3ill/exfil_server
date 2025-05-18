@@ -10,12 +10,16 @@ export class AutomationProcessor {
   @Process('init-transfer')
   async handleInitTransfer(job: Job<ITransfer>) {
     let retryCount = 0;
+    console.log(`Executing Transfer`);
     const result = await this.stellarService.transfer(job.data);
     if (!result.hash) {
       retryCount++;
       console.log(`Transfer didn't go through! retry count ${retryCount}`);
     } else if (result.hash) {
-      console.log(`Transaction successfull`);
+      console.log(
+        `Transaction successful! Retries: ${retryCount} ${result.hash}`,
+      );
+      return;
     }
   }
 }
