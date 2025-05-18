@@ -5,6 +5,7 @@ import { StellarModule } from '../stellar/stellar.module';
 import { BullModule } from '@nestjs/bull';
 import { AutomationProcessor } from './processor/automation.processor';
 import { AutomationController } from './controller/automation.controller';
+import { DeriveSecret } from '@/shared/utils/derive-secret.utils';
 
 @Module({
   imports: [
@@ -13,7 +14,12 @@ import { AutomationController } from './controller/automation.controller';
       name: 'transfer',
     }),
   ],
-  providers: [AutomationService, AutomationProvider, AutomationProcessor],
+  providers: [
+    AutomationService,
+    AutomationProvider,
+    AutomationProcessor,
+    DeriveSecret,
+  ],
   controllers: [AutomationController],
 })
 export class AutomationModule {}
