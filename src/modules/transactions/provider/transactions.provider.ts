@@ -23,6 +23,7 @@ export class TransactionsProvider {
         timestamp,
       });
 
+      console.log(`Tx successfully created`);
       return {
         status: HttpStatus.OK,
         message: TxSuccessMessage.TX_CREATED,
