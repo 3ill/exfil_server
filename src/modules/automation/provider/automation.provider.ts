@@ -71,7 +71,7 @@ export class AutomationProvider {
     const now = Date.now();
 
     const runAt =
-      this.formatAndReturnUnlockTIme(unlockTimestamp) - TIMER['2_SECS'];
+      this.formatAndReturnUnlockTIme(unlockTimestamp) - TIMER['3_SECS'];
 
     const delay = runAt - now;
     console.log(
