@@ -5,7 +5,5 @@ export const PUBLIC_KEY =
 export const SECRET_KEY =
   'SCF4S3GJ623TYPWRHCFWD3ARXEDMPGDB3BRGRT3CIK4GFRZS6YWDVEN3';
 export const DERIVATION_PATH = "m/44'/314159'/0'";
-export const PASSPHRASE =
-  'kitchen palace loop code seed era nominee solve online trust humor jar economy fade relax truth kingdom extend detect surprise badge muffin person weird';
-export const MAINNET_PHRASE =
-  'grunt neck depend all vacant hour skill cluster logic survey addict lucky orphan offer matter only basic ship buyer pen cattle major attitude swift';
+export const PASSPHRASE = '';
+export const MAINNET_PHRASE = '';
