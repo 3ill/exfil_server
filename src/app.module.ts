@@ -41,6 +41,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
         },
       }),
     }),
+
     AutomationModule,
     StellarModule,
     TransactionsModule,
