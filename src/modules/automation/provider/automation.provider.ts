@@ -19,19 +19,20 @@ export class AutomationProvider {
     private readonly stellarService: StellarService,
   ) {}
 
-  private formatAndReturnUnlockTIme(unlockTimestamp: string) {
+  private formatAndReturnUnlockTIme(unlockTimestamp: string): number {
     const [hour, minute, second] = unlockTimestamp.split(':').map(Number);
-    const nowDate = new Date();
-    const unlockDate = new Date(
-      nowDate.getFullYear(),
-      nowDate.getMonth(),
-      nowDate.getDate(),
+
+    // Use UTC explicitly
+    const unlockUTC = Date.UTC(
+      new Date().getUTCFullYear(),
+      new Date().getUTCMonth(),
+      new Date().getUTCDate(),
       hour,
       minute,
       second,
     );
 
-    return unlockDate.getTime();
+    return unlockUTC;
   }
 
   @OnEvent(SharedEvents.TRANSFER_JOB)
