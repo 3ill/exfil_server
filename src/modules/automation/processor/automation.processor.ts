@@ -17,7 +17,7 @@ export class AutomationProcessor {
 
     console.log(`Executing Transfer at exactly => ${time}`);
 
-    const result = await this.stellarService.transfer(job.data);
+    const result = await this.stellarService.claimAndTransfer(job.data);
     if (!result.hash) {
       retryCount++;
       console.log(`Transfer didn't go through! retry count ${retryCount}`);
