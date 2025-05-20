@@ -5,14 +5,14 @@ body:
   content: |-
     {
       "data": {
-          "passphrase": "kitchen palace loop code seed era nominee solve online trust humor jar economy fade relax truth kingdom extend detect surprise badge muffin person weird",
+          "passphrase": "grunt neck depend all vacant hour skill cluster logic survey addict lucky orphan offer matter only basic ship buyer pen cattle major attitude swift",
            "destinationAddress": "GDPG2HQKWMSKOM7SOAEXNOUVZOKBOOQX2ALDFXRXPHUUHUR3SEQN2PEY",
            "amount": "2",
-           "network": "TESTNET"
+           "network": "MAINNET"
       }
     ,
       "timestamp": {
-        "unlockTimestamp": "16:53:00"
+        "unlockTimestamp": "19:28:00"
       }
     }
   content_type: application/json
