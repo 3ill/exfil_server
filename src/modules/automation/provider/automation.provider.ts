@@ -54,6 +54,7 @@ export class AutomationProvider {
       },
       delay,
     };
+    console.log(`Scheduling Queuing`);
     return await this.transferQueue.add('init-transfer', queueData.data, {
       delay: queueData.delay,
       attempts: 3,
@@ -100,7 +101,7 @@ export class AutomationProvider {
 
         return {
           status: HttpStatus.OK,
-          message: `${SuccessMessage.TRANSFER_INIT}, Pi will be moved in ${delayInSecs}Secs `,
+          message: `${SuccessMessage.TRANSFER_INIT}, Pi will be moved in ${delayInSecs} Secs `,
         };
       }
     } catch (error) {
