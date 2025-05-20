@@ -195,4 +195,91 @@ export class StellarService {
       );
     }
   }
+
+  async claimAndTransfer(args: ITransfer) {
+    const { destinationAddress, secretKey, passphrase, amount, network } = args;
+    try {
+      if (network === 'TESTNET') {
+        console.log(`No balance Id. Executing regular transfer`);
+        return await this.transfer(args);
+      }
+
+      const keyPair = secretKey
+        ? this.stellarProvider.deriveKeypairFromSecret(secretKey)
+        : await this.stellarProvider.deriveKeypairFromPassphrase(passphrase!);
+
+      const account = await this.stellarProvider.loadAccount({
+        network,
+        publicKey: keyPair.publicKey(),
+      });
+
+      const baseFee = await this.stellarProvider.fetchBaseFee(network);
+      const record = await this.stellarProvider
+        .fetchClaimableBalances({
+          publicKey: keyPair.publicKey(),
+          network,
+        })
+        .then((res) => res.map((rec) => rec.id));
+
+      const balanceId = record[0];
+
+      if (!balanceId) {
+        console.log(`No balance Id. Executing regular transfer`);
+        return await this.transfer(args);
+      }
+
+      const tx = new TransactionBuilder(account, {
+        fee: String(baseFee),
+        networkPassphrase: this.determinePassphrase(network),
+      })
+        .addOperation(this.stellarProvider.provideClaimableBalanceOp(balanceId))
+        .addOperation(
+          this.stellarProvider.providePaymentOp({
+            amount,
+            destinationAddress,
+            sourceAddress: keyPair.publicKey(),
+          }),
+        )
+        .setTimeout(30)
+        .build();
+
+      tx.sign(keyPair);
+
+      const date = new Date();
+      const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+      console.log(`Transaction submitted exactly at => ${time}`);
+      const hash = await this.stellarProvider.submitTx({
+        network,
+        tx,
+      });
+
+      if (!hash) {
+        throw new HttpException(
+          StellarErrorMessages.ERROR_SUBMITTING_TX,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      console.log(`Transaction hash => ${hash}`);
+      const status: TStatus = hash ? 'SUCCESS' : 'FAILED';
+      this.eventEmitter.emit(
+        SharedEvents.CREATE_TX,
+        new CreateTxDto(amount, destinationAddress, status, time, hash),
+      );
+      return {
+        status: HttpStatus.OK,
+        hash,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        StellarErrorMessages.ERROR_CLAIMING_ASSET,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
 }

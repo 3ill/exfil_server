@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Asset, Horizon, Keypair, Operation } from '@stellar/stellar-sdk';
 import {
   ICreateAccount,
+  IFetchClaimableBalance,
   ILoadAccount,
   IProvidePaymentOp,
   ISubmitTX,
@@ -69,6 +70,25 @@ export class StellarProvider {
       destination: destinationAddress,
       asset: Asset.native(),
       amount,
+    });
+  }
+
+  async fetchClaimableBalances(args: IFetchClaimableBalance) {
+    const server = this.initServer(args.network);
+
+    const claimableBalances = server
+      .claimableBalances()
+      .claimant(args.publicKey)
+      .call();
+
+    const records = (await claimableBalances).records;
+
+    return records;
+  }
+
+  provideClaimableBalanceOp(balanceId: string) {
+    return Operation.claimClaimableBalance({
+      balanceId,
     });
   }
 

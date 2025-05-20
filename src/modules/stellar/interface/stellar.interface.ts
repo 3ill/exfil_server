@@ -30,3 +30,8 @@ export interface ITransfer {
   amount: string;
   network: TNetwork;
 }
+
+export interface IFetchClaimableBalance {
+  publicKey: string;
+  network: TNetwork;
+}

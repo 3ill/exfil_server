@@ -33,10 +33,26 @@ describe('Stellar', () => {
   });
 
   describe('Base Fee', () => {
-    it.only('should return base fee on pi', async () => {
+    it('should return base fee on pi', async () => {
       const fee = await provider.fetchBaseFee('TESTNET');
       console.log(fee);
       expect(fee).toBeDefined();
+    });
+  });
+
+  describe('Claimable balances', () => {
+    it.only('should return claimable balance', async () => {
+      const record = await provider
+        .fetchClaimableBalances({
+          network: 'MAINNET',
+          publicKey: '',
+        })
+        .then((res) => res.map((rec) => rec.id));
+
+      const id = record[0];
+      console.log(id);
+
+      expect(record).toBeDefined();
     });
   });
 });

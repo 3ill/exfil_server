@@ -13,4 +13,5 @@ export enum StellarErrorMessages {
   ERROR_CREATING_ACCOUNT = 'Error creating account',
   ERROR_INVALID_NETWORK = 'Invalid network',
   ERROR_TRANSFERRING_ASSET = 'Error transferring asset',
+  ERROR_CLAIMING_ASSET = 'Error claiming asset',
 }
