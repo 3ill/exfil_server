@@ -174,6 +174,7 @@ export class StellarService {
         );
       }
 
+      console.log(`Transaction hash => ${hash}`);
       const status: TStatus = hash ? 'SUCCESS' : 'FAILED';
       this.eventEmitter.emit(
         SharedEvents.CREATE_TX,
