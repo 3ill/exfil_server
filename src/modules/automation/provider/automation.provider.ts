@@ -22,7 +22,6 @@ export class AutomationProvider {
   private formatAndReturnUnlockTIme(unlockTimestamp: string): number {
     const [hour, minute, second] = unlockTimestamp.split(':').map(Number);
 
-    // Use UTC explicitly
     const unlockUTC = Date.UTC(
       new Date().getUTCFullYear(),
       new Date().getUTCMonth(),
@@ -65,7 +64,7 @@ export class AutomationProvider {
   }
 
   async executeTransfer(args: Omit<IHandleQueue, 'delay'>) {
-    return await this.stellarService.transfer(args.data);
+    return await this.stellarService.claimAndTransfer(args.data);
   }
 
   async scheduleTransfer(args: IScheduleTransfer) {
